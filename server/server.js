@@ -1,4 +1,3 @@
-
 // Load environment variables
 require("dotenv").config();
 
@@ -7,6 +6,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 // const mongoSanitize = require("express-mongo-sanitize");
+const path = require("path");
 
 const connectDB = require("./config/db");
 
@@ -17,16 +17,7 @@ const theatreRouter = require("./routes/theatreRoute");
 const showRouter = require("./routes/showRoutes");
 const bookingRouter = require("./routes/bookingRoutes");
 
-const path = require("path");
 const app = express();
-const clientBuildPath = path.join(__dirname, "../client/build");
-console.log(clientBuildPath);
-app.use(express.static(clientBuildPath));
-app.get("*", (req, res) => {
-res.sendFile(path.join(clientBuildPath, "index.html"));
-});
-
-// const app = express();
 
 // ✅ Security middlewares
 app.use(helmet());
@@ -45,16 +36,16 @@ app.use(
 );
 app.disable("x-powered-by");
 
-// app.use(
-//   mongoSanitize({
-//     replaceWith: "_", // ✅ prevents "Cannot set property query" error
-//   })
-// );
-
 // ✅ Core middlewares
 app.use(cors());
 app.use(express.json());
 app.use("/api/bookings/verify", express.raw({ type: "application/json" })); // For payment verification
+
+// app.use(
+//   mongoSanitize({
+//     replaceWith: "_",
+//   })
+// );
 
 // ✅ Connect to MongoDB
 connectDB();
@@ -67,7 +58,7 @@ const apiLimiter = rateLimit({
 });
 app.use("/api/", apiLimiter);
 
-// ✅ Routes
+// ✅ API Routes (must be before React fallback)
 app.use("/api/users", userRouter);
 app.use("/api/movies", movieRouter);
 app.use("/api/theatres", theatreRouter);
@@ -75,13 +66,16 @@ app.use("/api/shows", showRouter);
 app.use("/api/bookings", bookingRouter);
 
 // ✅ Health check
-app.get("/", (req, res) => {
-  res.send("🎬 BookMyShow API is running...");
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "🎬 BookMyShow API is running..." });
 });
 
-// ✅ 404 handler
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
+// ✅ Serve React build for frontend routes (fallback)
+const clientBuildPath = path.join(__dirname, "../client/build");
+app.use(express.static(clientBuildPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(clientBuildPath, "index.html"));
 });
 
 // ✅ Start server
