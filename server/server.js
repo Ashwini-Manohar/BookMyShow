@@ -1,41 +1,3 @@
-// const dotenv = require("dotenv");
-// dotenv.config();
-// const rateLimit = require("express-rate-limit");
-
-// const express = require("express");
-// const cors = require("cors");
-// const connectDB = require("./config/db");
-// const userRouter = require("./routes/userRoutes");
-// const moviesRouter=require("./routes/movieRoutes");
-// const theatreRouter = require("./routes/theatreRoute"); 
-// const showRouter=require("./routes/showRoutes");
-// const bookingRouter=require("./routes/bookingRoutes");
-// const app = express();
-
-// // Connect to MongoDB
-// connectDB();
-
-// // Middlewares
-// app.use(cors()); // Allow frontend requests
-// app.use(express.json()); // Parse JSON request body
-
-// // Routes
-// app.use("/api/users", userRouter); // <-- All routes will start with /api/users
-// app.use("/api/movies", moviesRouter);
-// app.use("/api/theatres", theatreRouter);
-// app.use("/api/shows",showRouter);
-// app.use("/api/bookings",bookingRouter);
-// // Root route for testing
-// app.get("/", (req, res) => {
-//   res.send("API is running...");
-// });
-
-// // Start server
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
-
 
 // Load environment variables
 require("dotenv").config();
@@ -55,7 +17,16 @@ const theatreRouter = require("./routes/theatreRoute");
 const showRouter = require("./routes/showRoutes");
 const bookingRouter = require("./routes/bookingRoutes");
 
+const path = require("path");
 const app = express();
+const clientBuildPath = path.join(__dirname, "../client/build");
+console.log(clientBuildPath);
+app.use(express.static(clientBuildPath));
+app.get("*", (req, res) => {
+res.sendFile(path.join(clientBuildPath, "index.html"));
+});
+
+// const app = express();
 
 // ✅ Security middlewares
 app.use(helmet());
@@ -114,7 +85,7 @@ app.use((req, res) => {
 });
 
 // ✅ Start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });

@@ -19,23 +19,6 @@ const TheatreList = () => {
   const [isShowModalOpen, setIsShowModalOpen] = useState(false);
   const dispatch = useDispatch();
 
-//   const getData = async () => {
-//     if (!user?._id) return;
-//     try {
-//       dispatch(ShowLoading());
-//       const response = await getAllTheatres(user._id);
-//       if (response.success) {
-//         setTheatres(response.data.map(item => ({ ...item, key: `theatre${item._id}` })));
-//       } else {
-//         message.error(response.message);
-//       }
-//       dispatch(HideLoading());
-//     } catch (err) {
-//       dispatch(HideLoading());
-//       message.error(err.message);
-//     }
-//   };
-
 const getData = async () => {
   if (!user?._id) return;
   try {
