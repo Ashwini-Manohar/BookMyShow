@@ -125,41 +125,47 @@ dispatch(HideLoading());
 useEffect(() => {
 getData();
 }, []);
-
 return (
-<>
-<div className="d-flex justify-content-end">
-<Button
-onClick={() => {
-setIsModalOpen(true);
-setFormType("add");
-}}
->
-Add Movie
-</Button>
+  <>
+    {/* Button container */}
+    <div className="d-flex justify-content-end mb-3">
+      <Button
+        onClick={() => {
+          setIsModalOpen(true);
+          setFormType("add");
+        }}
+      >
+        Add Movie
+      </Button>
+    </div>
 
-<Table dataSource={movies} columns={tableHeadings} />
-{isModalOpen && (
-    <MovieForm
-    isModalOpen={isModalOpen}
-    setIsModalOpen={setIsModalOpen}
-    selectedMovie={selectedMovie}
-    setSelectedMovie={setSelectedMovie}
-    formType={formType}
-    getData={getData}
-    />
-)}
-{isDeleteModalOpen && (
-    <DeleteMovieModal
-    isDeleteModalOpen={isDeleteModalOpen}
-    setIsDeleteModalOpen={setIsDeleteModalOpen}
-    selectedMovie={selectedMovie}
-    setSelectedMovie={setSelectedMovie}
-    getData={getData}
-    />
-)}
-</div>
-</>
+    {/* Table */}
+    <Table dataSource={movies} columns={tableHeadings} />
+
+    {/* Movie Form Modal */}
+    {isModalOpen && (
+      <MovieForm
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        selectedMovie={selectedMovie}
+        setSelectedMovie={setSelectedMovie}
+        formType={formType}
+        getData={getData}
+      />
+    )}
+
+    {/* Delete Modal */}
+    {isDeleteModalOpen && (
+      <DeleteMovieModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+        selectedMovie={selectedMovie}
+        setSelectedMovie={setSelectedMovie}
+        getData={getData}
+      />
+    )}
+  </>
 );
+
 }
 export default MovieList;
